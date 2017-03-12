@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Shopping</string>
+    <string name="login_button">login</string>
+    <string name="menu_button">Settings</string>
+    <string name="inline_preferences">Font size and color</string>
+    <string name="title_color_preference">Font color</string>
+    <string name="summary_color_preference">Choose font color from the list.</string>
+    <string name="title_size_preference">Font size</string>
+    <string name="summary_size_preference">Choose font size from the list.</string>
+</resources>
