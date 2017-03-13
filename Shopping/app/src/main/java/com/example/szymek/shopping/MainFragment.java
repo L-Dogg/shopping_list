@@ -9,7 +9,7 @@ import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
@@ -41,12 +41,12 @@ public class MainFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.shopping_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL));
 
         list = new ArrayList<>();
         shoppingAdapter = new ShoppingAdapter(list, getActivity());
 
-        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getContext(), recyclerView, new ClickListener() {
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity().getApplicationContext(), recyclerView, new ClickListener() {
             @Override
             public void onClick(View view, int position) {
                 ShoppingItem item = list.get(position);
@@ -76,7 +76,7 @@ public class MainFragment extends Fragment {
             }
         });
 
-        mDbHelper = new FeedReaderDbHelper(getContext());
+        mDbHelper = new FeedReaderDbHelper(getActivity().getApplicationContext());
         prepareData();
         return  view;
     }
@@ -119,7 +119,7 @@ public class MainFragment extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Add new item");
 
-        Context context = getContext();
+        Context context = getActivity().getApplicationContext();
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
 
@@ -128,7 +128,7 @@ public class MainFragment extends Fragment {
         nameInput.setInputType(InputType.TYPE_CLASS_TEXT);
         layout.addView(nameInput);
 
-        final EditText quantityInput = new EditText(getContext());
+        final EditText quantityInput = new EditText(getActivity().getApplicationContext());
         quantityInput.setHint("Quantity");
         quantityInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         layout.addView(quantityInput);
@@ -139,7 +139,7 @@ public class MainFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (nameInput.length() == 0 || quantityInput.length() == 0) {
-                    Toast.makeText(getContext(), "Invalid data", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity().getApplicationContext(), "Invalid data", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 String name = nameInput.getText().toString();
@@ -162,7 +162,7 @@ public class MainFragment extends Fragment {
 
                 shoppingAdapter.notifyDataSetChanged();
                 dialog.dismiss();
-                Toast.makeText(getContext(), nameInput.getText() + " added!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity().getApplicationContext(), nameInput.getText() + " added!", Toast.LENGTH_SHORT).show();
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -176,19 +176,19 @@ public class MainFragment extends Fragment {
     }
 
     private void editItem(final ShoppingItem item) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity().getApplicationContext());
         builder.setTitle("Edit item");
 
-        Context context = getContext();
+        Context context = getActivity().getApplicationContext();
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
 
-        final EditText nameInput = new EditText(getContext());
+        final EditText nameInput = new EditText(getActivity().getApplicationContext());
         nameInput.setText(item.getTitle());
         nameInput.setInputType(InputType.TYPE_CLASS_TEXT);
         layout.addView(nameInput);
 
-        final EditText quantityInput = new EditText(getContext());
+        final EditText quantityInput = new EditText(getActivity().getApplicationContext());
         quantityInput.setText(String.valueOf(item.getQuantity()));
         quantityInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         layout.addView(quantityInput);
@@ -199,14 +199,14 @@ public class MainFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (nameInput.length() == 0 || quantityInput.length() == 0) {
-                    Toast.makeText(getContext(), "Invalid data", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity().getApplicationContext(), "Invalid data", Toast.LENGTH_SHORT).show();
                 }
                 else {
                     item.setTitle(nameInput.getText().toString());
                     item.setQuantity(Double.parseDouble(quantityInput.getText().toString()));
                     shoppingAdapter.notifyDataSetChanged();
                     dialog.dismiss();
-                    Toast.makeText(getContext(), nameInput.getText() + " edited!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity().getApplicationContext(), nameInput.getText() + " edited!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -224,7 +224,7 @@ public class MainFragment extends Fragment {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         ShoppingItem item = list.get(id);
-        Toast.makeText(getContext(), item.getTitle() + " removed!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity().getApplicationContext(), item.getTitle() + " removed!", Toast.LENGTH_SHORT).show();
         list.remove(id);
 
         String selection = FeedReaderContract.FeedEntry._ID + " = ?";

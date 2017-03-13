@@ -22,10 +22,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         FrameLayout viewById = (FrameLayout) findViewById(R.id.main_container);
-        FragmentManager supportFragmentManager = getSupportFragmentManager();
-        supportFragmentManager.beginTransaction()
-                .add(R.id.main_container, new MainFragment())
-                .addToBackStack(null)
+
+        getFragmentManager().beginTransaction()
+                .replace(R.id.main_container, new MainFragment())
+                //.addToBackStack(null)
                 .commit();
     }
 
