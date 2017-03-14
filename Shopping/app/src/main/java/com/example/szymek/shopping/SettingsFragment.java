@@ -1,5 +1,7 @@
 package com.example.szymek.shopping;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -8,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 public class SettingsFragment extends PreferenceFragment {
     @Override
@@ -31,14 +34,26 @@ public class SettingsFragment extends PreferenceFragment {
         color.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                preference.setSummary(newValue.toString());
+                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString(getString(R.string.color), newValue.toString());
+                editor.commit();
+                Toast.makeText(getActivity().getApplicationContext(),
+                        newValue.toString(),
+                        Toast.LENGTH_SHORT);
                 return true;
             }
         });
         size.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                preference.setSummary(newValue.toString());
+                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString(getString(R.string.size), newValue.toString());
+                editor.commit();
+                Toast.makeText(getActivity().getApplicationContext(),
+                        newValue.toString(),
+                        Toast.LENGTH_SHORT);
                 return true;
             }
         });

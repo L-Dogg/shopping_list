@@ -7,4 +7,8 @@
     <string name="summary_color_preference">Choose font color from the list.</string>
     <string name="title_size_preference">Font size</string>
     <string name="summary_size_preference">Choose font size from the list.</string>
+
+    <string name="color">black</string>
+    <string name="size">32sp</string>
+
 </resources>
