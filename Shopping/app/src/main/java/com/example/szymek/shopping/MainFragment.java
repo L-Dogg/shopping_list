@@ -62,13 +62,16 @@ public class MainFragment extends Fragment {
             }
         }));
 
-        /*CheckBox checkBox = (CheckBox) recyclerView.findViewById();
+        // TODO:
+        // mute checkbox click event so it does not trigger edit item dialog
+
+        CheckBox checkBox = (CheckBox) recyclerView.findViewById();
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 return;
             }
-        });*/
+        });
 
         recyclerView.setAdapter(shoppingAdapter);
 
@@ -179,7 +182,7 @@ public class MainFragment extends Fragment {
     }
 
     private void editItem(final ShoppingItem item) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity().getApplicationContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Edit item");
 
         Context context = getActivity().getApplicationContext();

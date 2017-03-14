@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -37,7 +38,9 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingViewHolder> {
     public void onBindViewHolder(ShoppingViewHolder holder, int position) {
         ShoppingItem shoppingItem = list.get(position);
         holder.mTitleView.setText(shoppingItem.getTitle());
-        holder.mDescriptionView.setText(String.valueOf(shoppingItem.getQuantity()));
+        DecimalFormat format = new DecimalFormat();
+        format.setDecimalSeparatorAlwaysShown(false);
+        holder.mDescriptionView.setText(format.format(shoppingItem.getQuantity()));
 
         Resources resources = mContext.getResources();
         SharedPreferences sharedPref = ((Activity)mContext).getPreferences(Context.MODE_PRIVATE);
@@ -50,7 +53,7 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingViewHolder> {
                 changeColor(holder, color);
         }
         // TODO:
-        // change font size (and maybe whole row size
+        // change font size (and maybe whole row size)
     }
     @Override
     public int getItemCount() {
@@ -61,5 +64,6 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingViewHolder> {
         int c = Color.parseColor(color);
         holder.mTitleView.setTextColor(c);
         holder.mDescriptionView.setTextColor(c);
+
     }
 }
