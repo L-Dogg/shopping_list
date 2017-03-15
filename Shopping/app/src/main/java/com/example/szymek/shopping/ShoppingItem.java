@@ -7,6 +7,7 @@ package com.example.szymek.shopping;
 public class ShoppingItem {
     private String title;
     private Double quantity;
+    private String type;
 
     public ShoppingItem(String title, Double quantity) {
         this.title = title;

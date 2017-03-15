@@ -16,7 +16,7 @@ public final class FeedReaderContract {
         public static final String TABLE_NAME = "ShoppingItems";
         public static final String COLUMN_NAME_NAME = "name";
         public static final String COLUMN_NAME_QUANTITY = "quantity";
-        public static final String COLUMN_NAME_IMAGE = "image";
+        public static final String COLUMN_NAME_TYPE = "type";
     }
 
 }

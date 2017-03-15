@@ -3,11 +3,15 @@ package com.example.szymek.shopping;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -22,21 +26,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static android.app.Activity.RESULT_OK;
 
 public class MainFragment extends Fragment {
     private List<ShoppingItem> list;
     private ShoppingAdapter shoppingAdapter;
     private FeedReaderDbHelper mDbHelper;
 
+    private int PICK_IMAGE_REQUEST = 1;
+    
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -74,7 +86,7 @@ public class MainFragment extends Fragment {
         String[] projection = {
                 FeedReaderContract.FeedEntry._ID,
                 FeedReaderContract.FeedEntry.COLUMN_NAME_NAME,
-                FeedReaderContract.FeedEntry.COLUMN_NAME_IMAGE,
+                FeedReaderContract.FeedEntry.COLUMN_NAME_TYPE,
                 FeedReaderContract.FeedEntry.COLUMN_NAME_QUANTITY
 
         };
@@ -86,9 +98,9 @@ public class MainFragment extends Fragment {
 
         while(cursor.moveToNext()) {
             String itemName = cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_NAME));
-            byte[] itemImage = cursor.getBlob(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_IMAGE));
+            String itemType = cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_TYPE));
             Double itemQuantity = cursor.getDouble(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_QUANTITY));
-            //DbBitmapUtility.getImage(itemImage);
+
             list.add(new ShoppingItem(itemName, itemQuantity));
         }
         cursor.close();
@@ -109,12 +121,29 @@ public class MainFragment extends Fragment {
         nameInput.setInputType(InputType.TYPE_CLASS_TEXT);
         layout.addView(nameInput);
 
-        final EditText quantityInput = new EditText(getActivity().getApplicationContext());
+        final EditText quantityInput = new EditText(getActivity());
         quantityInput.setHint("Quantity");
         quantityInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         layout.addView(quantityInput);
 
+        final TextView spinnerLabel = new TextView(getActivity());
+        spinnerLabel.setText(R.string.spinner_label);
 
+        layout.addView(spinnerLabel);
+
+        ArrayList<String> spinnerArray = new ArrayList<>();
+        spinnerArray.add(ItemTypes.DRINK);
+        spinnerArray.add(ItemTypes.FOOD);
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_item, spinnerArray);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        final Spinner spinner = new Spinner(getActivity());
+        spinner.setAdapter(arrayAdapter);
+        layout.addView(spinner);
+
+        // TODO:
+        // add spinner to edit dialog
 
         builder.setView(layout);
 
@@ -135,6 +164,9 @@ public class MainFragment extends Fragment {
                 // Create a new map of values, where column names are the keys
                 ContentValues values = new ContentValues();
                 values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_NAME, name);
+                // TODO:
+                // change type to value from dropdown menu
+                values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_TYPE, spinner.getSelectedItem().toString());
                 values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_QUANTITY, quantity);
 
                 // TODO:
