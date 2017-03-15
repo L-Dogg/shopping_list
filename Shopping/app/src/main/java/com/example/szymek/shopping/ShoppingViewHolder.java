@@ -10,8 +10,6 @@ public class ShoppingViewHolder extends RecyclerView.ViewHolder{
     TextView mTitleView;
     TextView mDescriptionView;
 
-    MainFragment fragment;
-
     public ShoppingViewHolder(View itemView) {
         super(itemView);
         this.mTitleView = (TextView) itemView.findViewById(R.id.item_title);
@@ -21,7 +19,6 @@ public class ShoppingViewHolder extends RecyclerView.ViewHolder{
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int a = getAdapterPosition();
                 return;
             }
         });
