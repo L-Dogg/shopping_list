@@ -42,6 +42,11 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingViewHolder> {
         format.setDecimalSeparatorAlwaysShown(false);
         holder.mDescriptionView.setText(format.format(shoppingItem.getQuantity()));
 
+        if(shoppingItem.getType().equals(ItemTypes.DRINK))
+            holder.mImageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.drink));
+        else
+            holder.mImageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.food));
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

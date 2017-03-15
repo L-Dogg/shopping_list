@@ -47,8 +47,6 @@ public class MainFragment extends Fragment {
     private ShoppingAdapter shoppingAdapter;
     private FeedReaderDbHelper mDbHelper;
 
-    private int PICK_IMAGE_REQUEST = 1;
-    
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -56,7 +54,7 @@ public class MainFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.shopping_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL));
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
 
         list = new ArrayList<>();
         shoppingAdapter = new ShoppingAdapter(list, getActivity(), this);
@@ -101,7 +99,7 @@ public class MainFragment extends Fragment {
             String itemType = cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_TYPE));
             Double itemQuantity = cursor.getDouble(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_QUANTITY));
 
-            list.add(new ShoppingItem(itemName, itemQuantity));
+            list.add(new ShoppingItem(itemName, itemQuantity, itemType));
         }
         cursor.close();
 
@@ -142,9 +140,6 @@ public class MainFragment extends Fragment {
         spinner.setAdapter(arrayAdapter);
         layout.addView(spinner);
 
-        // TODO:
-        // add spinner to edit dialog
-
         builder.setView(layout);
 
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -156,7 +151,8 @@ public class MainFragment extends Fragment {
                 }
                 String name = nameInput.getText().toString();
                 Double quantity =  Double.parseDouble(quantityInput.getText().toString());
-                list.add(new ShoppingItem(name, quantity));
+                String type = spinner.getSelectedItem().toString();
+                list.add(new ShoppingItem(name, quantity, type));
 
                 // Gets the data repository in write mode
                 SQLiteDatabase db = mDbHelper.getWritableDatabase();
@@ -164,15 +160,9 @@ public class MainFragment extends Fragment {
                 // Create a new map of values, where column names are the keys
                 ContentValues values = new ContentValues();
                 values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_NAME, name);
-                // TODO:
-                // change type to value from dropdown menu
-                values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_TYPE, spinner.getSelectedItem().toString());
+                values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_TYPE, type);
                 values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_QUANTITY, quantity);
 
-                // TODO:
-                // save image
-
-                // Insert the new row, returning the primary key value of the new row
                 long newRowId = db.insert(FeedReaderContract.FeedEntry.TABLE_NAME, null, values);
 
                 shoppingAdapter.notifyDataSetChanged();
@@ -198,15 +188,32 @@ public class MainFragment extends Fragment {
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
 
-        final EditText nameInput = new EditText(getActivity().getApplicationContext());
+        final EditText nameInput = new EditText(getActivity());
         nameInput.setText(item.getTitle());
         nameInput.setInputType(InputType.TYPE_CLASS_TEXT);
         layout.addView(nameInput);
 
-        final EditText quantityInput = new EditText(getActivity().getApplicationContext());
+        final EditText quantityInput = new EditText(getActivity());
         quantityInput.setText(String.valueOf(item.getQuantity()));
         quantityInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         layout.addView(quantityInput);
+
+        final TextView spinnerLabel = new TextView(getActivity());
+        spinnerLabel.setText(R.string.spinner_label);
+
+        layout.addView(spinnerLabel);
+
+        ArrayList<String> spinnerArray = new ArrayList<>();
+        spinnerArray.add(ItemTypes.DRINK);
+        spinnerArray.add(ItemTypes.FOOD);
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_item, spinnerArray);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        final Spinner spinner = new Spinner(getActivity());
+        spinner.setAdapter(arrayAdapter);
+        spinner.setSelection(item.getType().equals(ItemTypes.DRINK) ? 0 : 1);
+        layout.addView(spinner);
 
         builder.setView(layout);
 
@@ -219,6 +226,7 @@ public class MainFragment extends Fragment {
                 else {
                     item.setTitle(nameInput.getText().toString());
                     item.setQuantity(Double.parseDouble(quantityInput.getText().toString()));
+                    item.setType(spinner.getSelectedItem().toString());
                     shoppingAdapter.notifyDataSetChanged();
                     dialog.dismiss();
                     Toast.makeText(getActivity().getApplicationContext(), nameInput.getText() + " edited!", Toast.LENGTH_SHORT).show();
