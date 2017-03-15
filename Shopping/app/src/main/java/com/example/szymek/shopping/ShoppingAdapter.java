@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,16 +45,26 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingViewHolder> {
 
         Resources resources = mContext.getResources();
         SharedPreferences sharedPref = ((Activity)mContext).getPreferences(Context.MODE_PRIVATE);
+
         String prefColor = sharedPref.getString(resources.getString(R.string.color), "black");
+        String prefSize = sharedPref.getString(resources.getString(R.string.size), "normal");
 
         String[] colorArray = resources.getStringArray(R.array.font_color_values);
+        String[] sizeArray = resources.getStringArray(R.array.font_size_values);
 
         for (String color: colorArray) {
             if (prefColor.equals(color))
                 changeColor(holder, color);
         }
-        // TODO:
-        // change font size (and maybe whole row size)
+
+        if (prefSize.equals("small"))
+            changeSize(holder, 20);
+        else if (prefSize.equals("normal"))
+            changeSize(holder, 32);
+        else if (prefSize.equals("big"))
+            changeSize(holder, 38);
+        else
+            changeSize(holder, 46);
     }
     @Override
     public int getItemCount() {
@@ -64,6 +75,10 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingViewHolder> {
         int c = Color.parseColor(color);
         holder.mTitleView.setTextColor(c);
         holder.mDescriptionView.setTextColor(c);
-
+    }
+    private void changeSize(ShoppingViewHolder holder, int size)
+    {
+        holder.mTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
+        holder.mDescriptionView.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
     }
 }

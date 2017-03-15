@@ -5,11 +5,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-/**
- * Created by Szymek on 10-Mar-17.
- */
-
-public class ShoppingViewHolder extends RecyclerView.ViewHolder {
+public class ShoppingViewHolder extends RecyclerView.ViewHolder{
     TextView mTitleView;
     TextView mDescriptionView;
 

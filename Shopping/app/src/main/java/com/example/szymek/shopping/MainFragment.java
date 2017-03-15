@@ -42,7 +42,7 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_main, container, false);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.shopping_list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL));
 
@@ -64,14 +64,6 @@ public class MainFragment extends Fragment {
 
         // TODO:
         // mute checkbox click event so it does not trigger edit item dialog
-
-        CheckBox checkBox = (CheckBox) recyclerView.findViewById();
-        checkBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                return;
-            }
-        });
 
         recyclerView.setAdapter(shoppingAdapter);
 

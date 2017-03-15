@@ -28,8 +28,8 @@ public class SettingsFragment extends PreferenceFragment {
         if(color.getValue() == null)
             color.setValueIndex(0);
         ListPreference size = (ListPreference) findPreference ("text_size_preference");
-        if(color.getValue() == null)
-            color.setValueIndex(0);
+        if(size.getValue() == null)
+            size.setValueIndex(0);
 
         color.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
