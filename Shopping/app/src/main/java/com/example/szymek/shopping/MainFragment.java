@@ -40,7 +40,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static android.R.attr.type;
 import static android.app.Activity.RESULT_OK;
+import static com.example.szymek.shopping.R.color.quantity;
 
 public class MainFragment extends Fragment {
     private List<ShoppingItem> list;
@@ -227,6 +229,7 @@ public class MainFragment extends Fragment {
                     item.setTitle(nameInput.getText().toString());
                     item.setQuantity(Double.parseDouble(quantityInput.getText().toString()));
                     item.setType(spinner.getSelectedItem().toString());
+                    updateItem(list.indexOf(item) + 1);
                     shoppingAdapter.notifyDataSetChanged();
                     dialog.dismiss();
                     Toast.makeText(getActivity().getApplicationContext(), nameInput.getText() + " edited!", Toast.LENGTH_SHORT).show();
@@ -254,5 +257,26 @@ public class MainFragment extends Fragment {
         String[] selectionArgs = {String.valueOf(id + 1)};
         db.delete(FeedReaderContract.FeedEntry.TABLE_NAME, selection, selectionArgs);
         shoppingAdapter.notifyDataSetChanged();
+    }
+
+    public void updateItem(int id) {
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+
+        // New value for one column
+        ContentValues values = new ContentValues();
+        ShoppingItem item = list.get(id);
+        values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_NAME, item.getTitle());
+        values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_TYPE, item.getType());
+        values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_QUANTITY, item.getQuantity());
+
+        // Which row to update, based on the title
+        String selection = FeedReaderContract.FeedEntry._ID + " = ?";
+        String[] selectionArgs = { String.valueOf(id) };
+
+        int count = db.update(
+                FeedReaderContract.FeedEntry.TABLE_NAME,
+                values,
+                selection,
+                selectionArgs);
     }
 }
