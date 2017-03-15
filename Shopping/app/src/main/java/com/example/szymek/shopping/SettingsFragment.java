@@ -64,5 +64,4 @@ public class SettingsFragment extends PreferenceFragment {
         container.removeAllViews();
         return super.onCreateView(inflater, container, savedInstanceState);
     }
-    /*...*/
 }

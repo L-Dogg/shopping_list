@@ -4,10 +4,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ShoppingViewHolder extends RecyclerView.ViewHolder{
     TextView mTitleView;
     TextView mDescriptionView;
+
+    MainFragment fragment;
 
     public ShoppingViewHolder(View itemView) {
         super(itemView);
@@ -18,6 +21,7 @@ public class ShoppingViewHolder extends RecyclerView.ViewHolder{
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int a = getAdapterPosition();
                 return;
             }
         });

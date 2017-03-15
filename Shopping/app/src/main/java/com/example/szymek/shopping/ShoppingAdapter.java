@@ -14,17 +14,15 @@ import android.view.ViewGroup;
 import java.text.DecimalFormat;
 import java.util.List;
 
-/**
- * Created by Szymek on 10-Mar-17.
- */
-
 public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingViewHolder> {
     private List<ShoppingItem> list;
     private Context mContext;
+    private MainFragment mMainFragment;
 
-    public ShoppingAdapter(List<ShoppingItem> list, Context mContext) {
+    public ShoppingAdapter(List<ShoppingItem> list, Context mContext, MainFragment mMainFragment) {
         this.list = list;
         this.mContext = mContext;
+        this.mMainFragment = mMainFragment;
     }
 
     @Override
@@ -32,25 +30,40 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingViewHolder> {
         View view = LayoutInflater.from(parent.getContext()).
                 inflate(R.layout.layout_shopping_item, null);
         ShoppingViewHolder shoppingViewHolder = new ShoppingViewHolder(view);
+
         return shoppingViewHolder;
     }
 
     @Override
-    public void onBindViewHolder(ShoppingViewHolder holder, int position) {
+    public void onBindViewHolder(ShoppingViewHolder holder, final int position) {
         ShoppingItem shoppingItem = list.get(position);
         holder.mTitleView.setText(shoppingItem.getTitle());
         DecimalFormat format = new DecimalFormat();
         format.setDecimalSeparatorAlwaysShown(false);
         holder.mDescriptionView.setText(format.format(shoppingItem.getQuantity()));
 
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMainFragment.editItem(list.get(position));
+            }
+        });
+
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                mMainFragment.removeItem(position);
+                return true;
+            }
+        });
+
         Resources resources = mContext.getResources();
         SharedPreferences sharedPref = ((Activity)mContext).getPreferences(Context.MODE_PRIVATE);
 
         String prefColor = sharedPref.getString(resources.getString(R.string.color), "black");
         String prefSize = sharedPref.getString(resources.getString(R.string.size), "normal");
-
         String[] colorArray = resources.getStringArray(R.array.font_color_values);
-        String[] sizeArray = resources.getStringArray(R.array.font_size_values);
+
 
         for (String color: colorArray) {
             if (prefColor.equals(color))

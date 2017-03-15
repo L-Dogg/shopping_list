@@ -47,24 +47,7 @@ public class MainFragment extends Fragment {
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL));
 
         list = new ArrayList<>();
-        shoppingAdapter = new ShoppingAdapter(list, getActivity());
-
-        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity().getApplicationContext(), recyclerView, new ClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                ShoppingItem item = list.get(position);
-                editItem(item);
-            }
-
-            @Override
-            public void onLongClick(View view, int position) {
-                removeItem(position);
-            }
-        }));
-
-        // TODO:
-        // mute checkbox click event so it does not trigger edit item dialog
-
+        shoppingAdapter = new ShoppingAdapter(list, getActivity(), this);
         recyclerView.setAdapter(shoppingAdapter);
 
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
@@ -131,6 +114,8 @@ public class MainFragment extends Fragment {
         quantityInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         layout.addView(quantityInput);
 
+
+
         builder.setView(layout);
 
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -173,7 +158,7 @@ public class MainFragment extends Fragment {
         builder.show();
     }
 
-    private void editItem(final ShoppingItem item) {
+    public void editItem(final ShoppingItem item) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Edit item");
 
@@ -218,7 +203,7 @@ public class MainFragment extends Fragment {
         builder.show();
     }
 
-    private void removeItem(int id) {
+    public void removeItem(int id) {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         ShoppingItem item = list.get(id);
