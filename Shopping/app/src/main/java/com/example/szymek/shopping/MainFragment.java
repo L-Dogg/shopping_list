@@ -116,20 +116,22 @@ public class MainFragment extends Fragment {
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
 
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(dpToPx(20), 0, dpToPx(20), 0);
+
         final EditText nameInput = new EditText(getActivity());
         nameInput.setHint("Name");
         nameInput.setInputType(InputType.TYPE_CLASS_TEXT);
-        layout.addView(nameInput);
+        layout.addView(nameInput, params);
 
         final EditText quantityInput = new EditText(getActivity());
         quantityInput.setHint("Quantity");
         quantityInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-        layout.addView(quantityInput);
+        layout.addView(quantityInput, params);
 
         final TextView spinnerLabel = new TextView(getActivity());
         spinnerLabel.setText(R.string.spinner_label);
-
-        layout.addView(spinnerLabel);
+        layout.addView(spinnerLabel, params);
 
         ArrayList<String> spinnerArray = new ArrayList<>();
         spinnerArray.add(ItemTypes.DRINK);
@@ -140,7 +142,7 @@ public class MainFragment extends Fragment {
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         final Spinner spinner = new Spinner(getActivity());
         spinner.setAdapter(arrayAdapter);
-        layout.addView(spinner);
+        layout.addView(spinner, params);
 
         builder.setView(layout);
 
@@ -186,6 +188,9 @@ public class MainFragment extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Edit item");
 
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(dpToPx(20), 0, dpToPx(20), 0);
+
         Context context = getActivity().getApplicationContext();
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
@@ -193,17 +198,16 @@ public class MainFragment extends Fragment {
         final EditText nameInput = new EditText(getActivity());
         nameInput.setText(item.getTitle());
         nameInput.setInputType(InputType.TYPE_CLASS_TEXT);
-        layout.addView(nameInput);
+        layout.addView(nameInput, params);
 
         final EditText quantityInput = new EditText(getActivity());
         quantityInput.setText(String.valueOf(item.getQuantity()));
         quantityInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-        layout.addView(quantityInput);
+        layout.addView(quantityInput, params);
 
         final TextView spinnerLabel = new TextView(getActivity());
         spinnerLabel.setText(R.string.spinner_label);
-
-        layout.addView(spinnerLabel);
+        layout.addView(spinnerLabel, params);
 
         ArrayList<String> spinnerArray = new ArrayList<>();
         spinnerArray.add(ItemTypes.DRINK);
@@ -215,7 +219,7 @@ public class MainFragment extends Fragment {
         final Spinner spinner = new Spinner(getActivity());
         spinner.setAdapter(arrayAdapter);
         spinner.setSelection(item.getType().equals(ItemTypes.DRINK) ? 0 : 1);
-        layout.addView(spinner);
+        layout.addView(spinner, params);
 
         builder.setView(layout);
 
@@ -229,7 +233,7 @@ public class MainFragment extends Fragment {
                     item.setTitle(nameInput.getText().toString());
                     item.setQuantity(Double.parseDouble(quantityInput.getText().toString()));
                     item.setType(spinner.getSelectedItem().toString());
-                    updateItem(list.indexOf(item) + 1);
+                    updateItem(list.indexOf(item));
                     shoppingAdapter.notifyDataSetChanged();
                     dialog.dismiss();
                     Toast.makeText(getActivity().getApplicationContext(), nameInput.getText() + " edited!", Toast.LENGTH_SHORT).show();
@@ -271,12 +275,16 @@ public class MainFragment extends Fragment {
 
         // Which row to update, based on the title
         String selection = FeedReaderContract.FeedEntry._ID + " = ?";
-        String[] selectionArgs = { String.valueOf(id) };
+        String[] selectionArgs = { String.valueOf(id + 1) };
 
         int count = db.update(
                 FeedReaderContract.FeedEntry.TABLE_NAME,
                 values,
                 selection,
                 selectionArgs);
+    }
+
+    public int dpToPx(int dp) {
+        return (int) (dp * getActivity().getResources().getSystem().getDisplayMetrics().density);
     }
 }
